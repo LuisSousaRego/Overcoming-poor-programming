@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Blogging from my android phone</title><!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Blogging from my android phone" />
+<meta name="author" content="Luís Sousa Rêgo" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A few days ago I published my first proper blog post, and I did it entirely from my android phone. I never once touched another device from the moment I wrote the first word until I brought the post online. This includes drafting the idea, writing and testing code snippets, finishing writing the whole post, previewing it and finally publishing it." />
+<meta property="og:description" content="A few days ago I published my first proper blog post, and I did it entirely from my android phone. I never once touched another device from the moment I wrote the first word until I brought the post online. This includes drafting the idea, writing and testing code snippets, finishing writing the whole post, previewing it and finally publishing it." />
+<link rel="canonical" href="https://luissousarego.github.io/Overcoming-poor-programming/2021/07/15/Blogging-from-my-phone.html" />
+<meta property="og:url" content="https://luissousarego.github.io/Overcoming-poor-programming/2021/07/15/Blogging-from-my-phone.html" />
+<meta property="og:site_name" content="Overcoming poor programming" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-15T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Blogging from my android phone" />
+<script type="application/ld+json">
+{"description":"A few days ago I published my first proper blog post, and I did it entirely from my android phone. I never once touched another device from the moment I wrote the first word until I brought the post online. This includes drafting the idea, writing and testing code snippets, finishing writing the whole post, previewing it and finally publishing it.","url":"https://luissousarego.github.io/Overcoming-poor-programming/2021/07/15/Blogging-from-my-phone.html","@type":"BlogPosting","headline":"Blogging from my android phone","dateModified":"2021-07-15T00:00:00+00:00","datePublished":"2021-07-15T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://luissousarego.github.io/Overcoming-poor-programming/2021/07/15/Blogging-from-my-phone.html"},"author":{"@type":"Person","name":"Luís Sousa Rêgo"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="https://luissousarego.github.io/Overcoming-poor-programming/feed.xml" title="Overcoming poor programming" /><link rel="shortcut icon" type="image/x-icon" href="" />
+  <link rel="stylesheet" href="/Overcoming-poor-programming/assets/css/main.css" />
+</head><body a="auto">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+        <a href="/Overcoming-poor-programming/">..</a><article>
+  <p class="post-meta">
+    <time datetime="2021-07-15 00:00:00 +0000">2021-07-15</time>
+  </p>
+  
+  <h1>Blogging from my android phone</h1>
+
+  <p>A few days ago I published my first proper blog post, and I did it entirely from my android phone. I never once touched another device from the moment I wrote the first word until I brought the post online. This includes drafting the idea, writing and testing code snippets, finishing writing the whole post, previewing it and finally publishing it.</p>
+
+<p>This might not seem special for someone using WordPress or another similar platform but my setup is a little different. This blog is hosted on github pages and uses jekyll to generate static html web pages from markdown. Each blog post is a .md file inside the repository and when new commits are pushed to master a github action runs all the proper Jekyll commands that convert the markdown files into the html pages that are served to the browser.</p>
+
+<p>For me to publish my previous blog post I had to write markdown text and preview it, write postgresql code and test it and push the new file to the github repo. All of this from my phone, something I never though was possible. I will quickly share how I did it.</p>
+
+<h2 id="text">text</h2>
+<p>Writing the normal text in the blog post does not require anything special, any note taking or text editor app will suffice. Personally because I am writing markdown I used <a href="https://github.com/gsantner/markor">Markor</a>, a text editor app for android with great markdown support. It allowed me to not only write but preview what the rendered version would approximately look like.</p>
+
+<h2 id="code">code</h2>
+<p>For the code snippets I needed an instance of a postgresql database to test all the code and make sure it worked properly and there were no major problems with it. To solve this problem I used <a href="https://termux.com/">termux</a>, a terminal emulator and Linux environment that runs on Android. One of the cool things about it is the APT package management system with tons of different packages. I installed the postgresql package with <code class="language-plaintext highlighter-rouge">pkg install postgresql</code> and followed the <a href="https://wiki.termux.com/wiki/Postgresql">wiki page</a> to set it up. After this I had a working postgresql database on my phone and could work on the code snippets.</p>
+
+<h2 id="publish">publish</h2>
+<p>After everything else was finished I had to publish the post by uploading the .md file with the new blog post to the repo. This was done in two steps, authenticating to github and pushing the changes, both of them using termux.</p>
+
+<p>First I installed the openSSH package with <code class="language-plaintext highlighter-rouge">pkg install openssh</code>, this package is needed for ssh communications and to generate the ssh key pair used to authenticate. I generated the key pair into the ~/.ssh directory with <code class="language-plaintext highlighter-rouge">ssh-keygen -f ~/.ssh/github</code>. Then uploaded the contents of the github.pub key to my github account using the mobile browser. Finally changed the ssh config file in ~/.ssh/config to use the right key when accessing github by appending it the following:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Host github.com
+ HostName github.com
+ IdentityFile ~/.ssh/github
+</code></pre></div></div>
+
+<p>If everything was done correctly it should now be possible to ssh into github. To test this I entered <code class="language-plaintext highlighter-rouge">ssh -T git@github.com</code> in the terminal and got a message confirming I was authenticated.</p>
+
+<p>The second step involved giving termux access to the shared storage in my phone, this is done by running <code class="language-plaintext highlighter-rouge">termux-setup-storage</code>. When the command finished running I had access to ~/storage/shared/, the directory where most of my files are. After that I installed the git package with <code class="language-plaintext highlighter-rouge">pkg install git</code> and inside the ~/storage/shared/ directory cloned the github repo using the usual git commands. Then put the markdown file containing my post in the proper folder, committed the changes and push them to github.</p>
+
+<p>After the github action ran, the blog post was online and my laptop still inside my backpack.</p>
+
+</article>
+      </div>
+    </main>
+  </body>
+</html>
